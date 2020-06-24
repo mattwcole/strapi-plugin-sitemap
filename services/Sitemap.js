@@ -104,7 +104,11 @@ module.exports = {
     const sitemapEntries = [];
 
     await Promise.all(Object.keys(config.contentTypes).map(async (contentType) => {
-      const pages = await strapi.query(contentType).find();
+      const modelName = Object.values(strapi.contentTypes)
+        .find(strapiContentType => strapiContentType.info.name === contentType)
+        .modelName;
+
+      const pages = await strapi.query(modelName).find();
       const urls = await module.exports.getUrls(contentType, pages, config);
 
       urls.map((url) => {
